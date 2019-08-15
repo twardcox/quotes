@@ -3,12 +3,75 @@
  */
 package quotes;
 
+
+import com.google.gson.Gson;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class App {
-    public String getGreeting() {
-        return "Hello world.";
+
+    public static void main(String[] args) throws FileNotFoundException {
+
+       String fileString = readFile("src/main/resources/recentquotes.json");
+       Quote[] quotes = buildQuotes(fileString);
+
+       int randomQuoteLocation = generateRandomNumberBetween(0, quotes.length);
+
+        System.out.println(quotes[randomQuoteLocation]);
+
+
     }
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+    // read in the file, return it as a string
+        // in: file location (String)
+        // out: String
+
+        // could use scanner or buffered reader
+        // Scanner reader = new Scanner(new File("src/main/resources/unicorns.json"));
+
+        // buffered reader info: https://www.baeldung.com/java-buffered-reader
+        // BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/input.txt"));
+
+    public static String readFile(String fileLocation) throws FileNotFoundException {
+        Scanner reader = new Scanner(new File(fileLocation));
+        String entireFile = reader.nextLine();
+
+        while ( reader.hasNextLine() ){
+            entireFile += reader.nextLine();
+        }
+
+        return entireFile;
     }
+
+
+
+    // turn the string into an array of Quote objects
+        // in: string
+        // out: Quote[]
+    public static Quote[] buildQuotes(String entireFile){
+        Gson gson = new Gson();
+
+        Quote[] quotes = gson.fromJson(entireFile, Quote[].class);
+
+        return quotes;
+    }
+
+
+    // generate a random number between two given values (zero and length of quotes array)
+        // in: min & max
+        // out: random int between
+
+    // min is inclusive, max is not
+    public static int generateRandomNumberBetween(int min, int max){
+        // cite source here
+        if ( min >= max ){
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+        int ranNum = (int)((Math.random() * max ) + min);
+        return ranNum;
+    }
+
+
 }

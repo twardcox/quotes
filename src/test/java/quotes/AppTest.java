@@ -4,11 +4,33 @@
 package quotes;
 
 import org.junit.Test;
+
+import java.io.FileNotFoundException;
+
 import static org.junit.Assert.*;
 
 public class AppTest {
-    @Test public void testAppHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
+
+    @Test
+    public void readFile() throws FileNotFoundException {
+        assertNotNull("Should return a string",
+                App.readFile("src/main/resources/recentquotes.json"));
+    }
+
+    @Test
+    public void buildQuotes() throws FileNotFoundException {
+        String jsonString = App.readFile("src/main/resources/onequote.json");
+        assertEquals("should return an array of quote objects",
+                "Charles Dickens",
+                App.buildQuotes(jsonString)[1].author);
+    }
+
+    @Test
+    public void generateRandomNumberBetween() {
+        for ( int i = 0; i < 20; i++ ){
+            int randomNum = App.generateRandomNumberBetween(0, 5);
+            assertTrue("Random number should be within range",
+                    randomNum >= 0 && randomNum <= 5);
+        }
     }
 }
