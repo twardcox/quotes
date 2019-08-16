@@ -3,9 +3,15 @@
  */
 package quotes;
 
+import com.google.gson.JsonArray;
 import org.junit.Test;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
@@ -13,8 +19,7 @@ public class AppTest {
 
     @Test
     public void readFile() throws FileNotFoundException {
-        assertNotNull("Should return a string",
-                App.readFile("src/main/resources/recentquotes.json"));
+        assertNotNull("Should return a string",App.readFile("src/main/resources/recentquotes.json"));
     }
 
     @Test
@@ -33,4 +38,28 @@ public class AppTest {
                     randomNum >= 0 && randomNum <= 5);
         }
     }
+
+    @Test
+    public void testAddQuote_Happy() throws FileNotFoundException {
+        JsonArray arrType = new JsonArray();
+
+        assertSame("testAddQuote_Happy type should be JsonArray", arrType.getClass().getName(), App.addQuote(App.getQuoteFromWeb()).getClass().getName());
+    }
+
+    @Test
+    public void testAddToFile_Happy() throws IOException {
+        File file = new File("./src/main/resources/recentquotes.json");
+        int fileLength = (int) file.length();
+        JsonArray quote = App.addQuote(App.getQuoteFromWeb());
+        App.addToFile(quote);
+        int fileLength2 = (int) file.length();
+
+        assertTrue("testAddToFile_Happy return file size should be bigger than starting file size", fileLength <  fileLength2 );
+    }
+
+    @Test
+    public void testGetQuoteFromWeb() throws FileNotFoundException {
+        assertNotNull("testGetQuoteFromWeb should not be null", App.getQuoteFromWeb());
+    }
+//    getQuoteFromWeb
 }
